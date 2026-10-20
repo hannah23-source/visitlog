@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    margin: 0;
+    padding: 30px 15px;
+    color: #1e293b;
+}
+
+.container {
+    max-width: 550px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #00000015;
+}
+
+h1 {
+    color: #166534;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #166534;
+}
+
+.subtitle {
+    color: #64748b;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font: inherit;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px;
+    border: none;
+    border-radius: 6px;
+    background: #166534;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #14532d;
+}
+
+button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.camera-section {
+    margin-top: 25px;
+    padding-top: 10px;
+}
+
+#cameraPreview,
+#capturedPreview {
+    width: 100%;
+    max-width: 450px;
+    display: block;
+    margin: 12px auto;
+    border-radius: 8px;
+    background: #e2e8f0;
+}
+
+#cameraPreview[hidden],
+#capturedPreview[hidden],
+#retakePhoto[hidden] {
+    display: none;
+}
+
+.help,
+#cameraMessage {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.errorlist {
+    color: #b91c1c;
+    font-size: 14px;
+    padding-left: 20px;
+}
+
+hr {
+    margin: 25px 0;
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.submit-button {
+    margin-top: 25px;
+}
+
+body {
+    background-color: #e8f5e9 !important;
+}
+
+.container {
+    background-color: white !important;
+    padding: 30px !important;
+    max-width: 550px !important;
+    margin: 30px auto !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 15px #00000020 !important;
+}

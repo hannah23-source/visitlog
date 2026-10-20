@@ -1,0 +1,12 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+db.sqlite3
+media/
+staticfiles/
+.DS_Store
+visitors/views_backup.py

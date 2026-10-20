@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisitLog - Visitor Registration</title>
+    <link rel="stylesheet" href="{% static 'visitors/style.css' %}">
+</head>
+<body>
+<div class="container">
+    <h1>VisitLog</h1>
+    <p class="subtitle">School Visitors and Logbook Management System</p>
+
+    
+<h2>Visitor Registration</h2>
+
+<div class="location-section">
+    <h3>Verify Your Location</h3>
+    <p>Please allow location access to continue.</p>
+
+    <button type="button" id="verifyLocation">
+        Verify My Location
+    </button>
+
+    <p id="locationMessage" role="status" aria-live="polite"></p>
+</div>
+
+
+    <form method="post"
+      enctype="multipart/form-data"
+      id="visitorForm"
+      hidden>
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <label for="id_first_name">First Name</label>
+        {{ form.first_name }}
+        {{ form.first_name.errors }}
+
+        <label for="id_middle_name">Middle Name</label>
+        {{ form.middle_name }}
+        {{ form.middle_name.errors }}
+
+        <label for="id_last_name">Last Name</label>
+        {{ form.last_name }}
+        {{ form.last_name.errors }}
+
+        <label for="id_contact_number">Contact Number</label>
+        {{ form.contact_number }}
+        {{ form.contact_number.errors }}
+
+        <label for="id_purpose">Purpose of Visit</label>
+        {{ form.purpose }}
+        {{ form.purpose.errors }}
+
+        <hr>
+
+        <h3>Valid ID</h3>
+        <p class="help">Upload an ID image or take a photo using your camera.</p>
+
+        <label for="id_document">Upload ID Image (JPG or PNG)</label>
+        <input
+            type="file"
+            name="id_document"
+            id="id_document"
+            accept="image/jpeg,image/png"
+        >
+        {{ form.id_document.errors }}
+
+        <div class="camera-section">
+            <h3>Take a Photo of Your ID</h3>
+
+            <video id="cameraPreview" autoplay playsinline muted hidden></video>
+
+            <img id="capturedPreview" alt="Captured ID preview" hidden>
+
+            <canvas id="cameraCanvas" hidden></canvas>
+
+            <button type="button" id="openCamera">Open Camera</button>
+            <button type="button" id="capturePhoto" disabled>Capture Photo</button>
+            <button type="button" id="retakePhoto" hidden>Retake Photo</button>
+
+            <input
+                type="file"
+                name="camera_capture"
+                id="camera_capture"
+                accept="image/jpeg,image/png"
+                hidden
+            >
+
+            <p id="cameraMessage" role="status"></p>
+        </div>
+
+        <button type="submit" class="submit-button">Register Visitor</button>
+    </form>
+</div>
+
+<script src="{% static 'visitors/camera.js' %}" defer></script>
+<script src="{% static 'visitors/location.js' %}" defer></script>
+</body>
+</html>
