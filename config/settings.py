@@ -92,8 +92,24 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '3306'),
+        **(
+            {
+                'OPTIONS': {
+                    'ssl': {
+                        'ca': os.path.join(
+                            os.path.dirname(os.path.dirname(__file__)),
+                            'ca.pem'
+                        ),
+                    },
+                },
+            }
+            if os.environ.get('DB_HOST', '127.0.0.1') != '127.0.0.1'
+            and os.environ.get('DB_HOST', '127.0.0.1') != 'localhost'
+            else {}
+        ),
     }
 }
+
 
 
 
