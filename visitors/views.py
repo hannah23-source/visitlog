@@ -35,7 +35,6 @@ def get_valid_coordinates(data):
 def check_location(request):
     """Check whether the visitor is inside the school geofence."""
 
-    # Clear any previous verification before checking again.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
@@ -63,14 +62,10 @@ def check_location(request):
             status=400,
         )
 
-    # Calculate the distance from the school coordinates.
     distance = get_school_distance(latitude, longitude)
-
-    # Allow verification only within 200 meters.
     radius_meters = 200
     allowed = distance <= radius_meters
 
-    # Print diagnostic information immediately to Render logs.
     print(
         f"Location check: latitude={latitude}, "
         f"longitude={longitude}, "
@@ -115,7 +110,6 @@ def visitor_registration(request):
 
     if request.method == "POST":
 
-        # Require location verification before saving a visitor.
         if request.session.get("location_verified") is not True:
             return JsonResponse(
                 {
@@ -137,7 +131,6 @@ def visitor_registration(request):
         if form.is_valid():
             form.save()
 
-            # Verification is valid for one registration only.
             request.session.pop("location_verified", None)
             request.session.pop("verified_latitude", None)
             request.session.pop("verified_longitude", None)
@@ -168,15 +161,12 @@ def staff_dashboard(request):
     """Display visitor records and dashboard statistics."""
 
     today = timezone.localdate()
-
-    # Get visitor records, newest first.
     visitors = Visitor.objects.all().order_by("-time_in")
 
     search = request.GET.get("search", "").strip()
     month = request.GET.get("month", "")
     year = request.GET.get("year", "")
 
-    # Search by visitor name or contact number.
     if search:
         visitors = visitors.filter(
             Q(first_name__icontains=search)
@@ -185,13 +175,11 @@ def staff_dashboard(request):
             | Q(contact_number__icontains=search)
         )
 
-    # Filter by month.
     if month.isdigit() and 1 <= int(month) <= 12:
         visitors = visitors.filter(
             time_in__month=int(month)
         )
 
-    # Filter by year.
     if year.isdigit() and 2000 <= int(year) <= 2100:
         visitors = visitors.filter(
             time_in__year=int(year)
@@ -213,3 +201,4 @@ def staff_dashboard(request):
         "visitors/staff_dashboard.html",
         context,
     )
+
