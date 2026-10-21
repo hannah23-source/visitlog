@@ -1,135 +1,619 @@
+
+/* ========================================
+   VISITLOG - MAIN COLORS
+======================================== */
+:root {
+    --primary-blue: #2a5db0;
+    --primary-blue-dark: #1e4a91;
+    --primary-blue-light: #c7d8f4;
+    --background: #f4f7fc;
+    --text-dark: #222222;
+    --text-light: #7d8796;
+    --border-color: #d9e0ea;
+    --success: #198754;
+    --success-bg: #e4f6eb;
+    --danger: #d14d4d;
+    --danger-bg: #fdeaea;
+    --white: #ffffff;
+}
+
+/* ========================================
+   RESET
+======================================== */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+/* ========================================
+   PAGE
+======================================== */
 body {
-    font-family: Arial, sans-serif;
-    background: #f1f5f9;
-    margin: 0;
-    padding: 30px 15px;
-    color: #1e293b;
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--background);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
 }
 
-.container {
-    max-width: 550px;
-    margin: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px #00000015;
-}
-
-h1 {
-    color: #166534;
-    text-align: center;
-}
-
-h2, h3 {
-    color: #166534;
-}
-
-.subtitle {
-    color: #64748b;
-    text-align: center;
-}
-
-label {
-    display: block;
-    margin-top: 16px;
-    font-weight: bold;
-}
-
-input,
-textarea,
-select {
-    display: block;
+/* ========================================
+   MAIN CARD
+======================================== */
+.card {
     width: 100%;
-    padding: 12px;
-    margin-top: 7px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    max-width: 600px;
+    padding: 40px;
+    background-color: var(--white);
+    border: 1px solid #e8edf5;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(31, 65, 114, 0.08);
+    text-align: center;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+.header {
+    margin-bottom: 30px;
+}
+
+.header-title {
+    color: var(--primary-blue);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+.header-subtitle {
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   ICON
+======================================== */
+.icon-container {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background-color: var(--primary-blue-light);
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+/* ========================================
+   SECTION TITLES
+======================================== */
+.title {
+    color: var(--primary-blue);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.description {
+    max-width: 440px;
+    margin: 0 auto 28px;
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+/* ========================================
+   LOCATION STATUS BOX
+======================================== */
+.status-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    margin-bottom: 24px;
+    background-color: #edf3fd;
+    border: 1px solid #d9e6fa;
+    border-radius: 12px;
+    text-align: left;
+}
+
+.status-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.status-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #d8e6fc;
+    color: var(--primary-blue);
+    font-size: 20px;
+}
+
+.status-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.status-text h4 {
+    color: var(--text-dark);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.status-text p {
+    color: var(--text-light);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.status-badge {
+    flex-shrink: 0;
+    padding: 7px 12px;
+    border-radius: 20px;
+    background-color: #fce7e7;
+    color: var(--danger);
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    display: inline-block;
+    border-radius: 50%;
+    background-color: var(--danger);
+}
+
+/* Optional status classes for JavaScript */
+.status-badge.verified {
+    background-color: var(--success-bg);
+    color: var(--success);
+}
+
+.status-badge.verified::before {
+    background-color: var(--success);
+}
+
+.status-badge.error {
+    background-color: var(--danger-bg);
+    color: var(--danger);
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+button,
+input,
+select,
+textarea {
     font: inherit;
 }
 
-textarea {
+button {
+    cursor: pointer;
+}
+
+.btn-verify,
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    min-height: 46px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s ease,
+                transform 0.2s ease;
+}
+
+.btn-verify,
+.btn-primary {
+    width: 100%;
+    color: var(--white);
+    background-color: var(--primary-blue);
+}
+
+.btn-verify:hover,
+.btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+}
+
+.btn-secondary {
+    color: var(--primary-blue);
+    background-color: #e8effb;
+    border: 1px solid #d3e1f8;
+}
+
+.btn-secondary:hover {
+    background-color: #d8e6fc;
+}
+
+.btn-danger {
+    color: var(--white);
+    background-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: #b93636;
+}
+
+.btn-verify:disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-verify {
+    margin-bottom: 20px;
+}
+
+/* ========================================
+   FOOTER NOTE
+======================================== */
+.footer-note {
+    max-width: 430px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-light);
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.footer-note i,
+.footer-note svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+/* ========================================
+   VISITOR REGISTRATION FORM
+======================================== */
+#visitorSection {
+    width: 100%;
+    text-align: left;
+}
+
+#visitorSection .title,
+#visitorSection .description {
+    text-align: center;
+}
+
+#visitorForm {
+    width: 100%;
+    text-align: left;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+.form-group label,
+#visitorForm label {
+    display: block;
+    margin-bottom: 7px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: flex;
+    gap: 14px;
+    width: 100%;
+}
+
+.form-row > * {
+    flex: 1;
+    min-width: 0;
+}
+
+#visitorForm input[type="text"],
+#visitorForm input[type="tel"],
+#visitorForm input[type="email"],
+#visitorForm input[type="date"],
+#visitorForm input[type="time"],
+#visitorForm input[type="file"],
+#visitorForm select,
+#visitorForm textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--white);
+    color: var(--text-dark);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+#visitorForm input:focus,
+#visitorForm select:focus,
+#visitorForm textarea:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(42, 93, 176, 0.12);
+}
+
+#visitorForm input[readonly] {
+    background-color: #f5f7fa;
+    color: #667085;
+}
+
+#visitorForm select {
+    cursor: pointer;
+}
+
+#visitorForm textarea {
     min-height: 90px;
     resize: vertical;
 }
 
-button {
-    width: 100%;
-    margin-top: 12px;
-    padding: 13px;
+#visitorForm input[type="file"] {
+    padding: 10px;
+    background-color: #f8faff;
+}
+
+#visitorForm input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 10px;
     border: none;
-    border-radius: 6px;
-    background: #166534;
-    color: white;
-    font-size: 16px;
+    border-radius: 5px;
+    color: var(--primary-blue);
+    background-color: #e5edfc;
     cursor: pointer;
 }
 
-button:hover {
-    background: #14532d;
+/* ========================================
+   CAMERA SECTION
+======================================== */
+.capture-section {
+    width: 100%;
+    margin: 22px 0;
+    padding: 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: #f8faff;
+    text-align: left;
 }
 
-button:disabled {
-    background: #94a3b8;
-    cursor: not-allowed;
+.capture-section h3 {
+    margin-bottom: 8px;
+    color: var(--text-dark);
+    font-size: 16px;
 }
 
-.camera-section {
-    margin-top: 25px;
-    padding-top: 10px;
+.capture-section > p {
+    margin-top: 8px;
+    color: var(--text-light);
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 #cameraPreview,
-#capturedPreview {
-    width: 100%;
-    max-width: 450px;
+#capturedImage {
     display: block;
+    width: 100%;
+    max-height: 320px;
     margin: 12px auto;
     border-radius: 8px;
-    background: #e2e8f0;
+    background-color: #e9edf4;
+    object-fit: contain;
 }
 
-#cameraPreview[hidden],
-#capturedPreview[hidden],
-#retakePhoto[hidden] {
+#cameraPreview {
+    min-height: 180px;
+}
+
+#capturedImage {
+    border: 1px solid var(--border-color);
+}
+
+#cameraCanvas {
     display: none;
 }
 
-.help,
-#cameraMessage {
-    color: #64748b;
-    font-size: 14px;
+.camera-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.camera-actions button {
+    flex: 1;
+    min-width: 110px;
+}
+
+#id_document {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ========================================
+   FORM ERRORS AND MESSAGES
+======================================== */
+.errorlist {
+    margin: 6px 0 10px;
+    padding-left: 18px;
+    color: var(--danger);
+    font-size: 12px;
+}
+
+.error-message {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 8px;
+    color: var(--danger);
+    background-color: var(--danger-bg);
+    font-size: 13px;
     line-height: 1.5;
 }
 
-.errorlist {
-    color: #b91c1c;
-    font-size: 14px;
-    padding-left: 20px;
+.success-message {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 8px;
+    color: var(--success);
+    background-color: var(--success-bg);
+    font-size: 13px;
+    line-height: 1.5;
 }
 
-hr {
-    margin: 25px 0;
-    border: 0;
-    border-top: 1px solid #e2e8f0;
+/* ========================================
+   SUBMIT BUTTON
+======================================== */
+#visitorForm button[type="submit"] {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 12px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    color: var(--white);
+    background-color: var(--primary-blue);
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
 }
 
-.submit-button {
-    margin-top: 25px;
+#visitorForm button[type="submit"]:hover {
+    background-color: var(--primary-blue-dark);
 }
 
-body {
-    background-color: #e8f5e9 !important;
+/* ========================================
+   DJANGO ADMIN / GENERAL TABLES
+======================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.container {
-    background-color: white !important;
-    padding: 30px !important;
-    max-width: 550px !important;
-    margin: 30px auto !important;
-    border-radius: 15px !important;
-    box-shadow: 0 4px 15px #00000020 !important;
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+@media (max-width: 600px) {
+    body {
+        align-items: flex-start;
+        padding: 14px;
+    }
+
+    .card {
+        padding: 28px 20px;
+        border-radius: 12px;
+    }
+
+    .header-title {
+        font-size: 26px;
+    }
+
+    .header-subtitle {
+        font-size: 13px;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .description {
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .status-box {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px;
+    }
+
+    .status-left {
+        width: 100%;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .capture-section {
+        padding: 14px;
+    }
+
+    .camera-actions {
+        flex-direction: column;
+    }
+
+    .camera-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .card {
+        padding: 22px 14px;
+    }
+
+    .header-title {
+        font-size: 23px;
+    }
+
+    .icon-container {
+        width: 66px;
+        height: 66px;
+        font-size: 25px;
+    }
 }

@@ -1,103 +1,361 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisitLog - Visitor Registration</title>
+
+    <title>VisitLog - Visitor Sign In</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'visitors/style.css' %}">
 </head>
+
 <body>
-<div class="container">
-    <h1>VisitLog</h1>
-    <p class="subtitle">School Visitors and Logbook Management System</p>
+<div class="card">
 
-    
-<h2>Visitor Registration</h2>
+    <!-- LOCATION VERIFICATION -->
+    <section id="locationSection">
 
-<div class="location-section">
-    <h3>Verify Your Location</h3>
-    <p>Please allow location access to continue.</p>
+        <h1 class="header-title">VisitLog</h1>
 
-    <button type="button" id="verifyLocation">
-        Verify My Location
-    </button>
+        <p class="header-subtitle">
+            School Visitors and Logbook Management System.
+        </p>
 
-    <p id="locationMessage" role="status" aria-live="polite"></p>
-</div>
-
-
-    <form method="post"
-      enctype="multipart/form-data"
-      id="visitorForm"
-      hidden>
-        {% csrf_token %}
-
-        {{ form.non_field_errors }}
-
-        <label for="id_first_name">First Name</label>
-        {{ form.first_name }}
-        {{ form.first_name.errors }}
-
-        <label for="id_middle_name">Middle Name</label>
-        {{ form.middle_name }}
-        {{ form.middle_name.errors }}
-
-        <label for="id_last_name">Last Name</label>
-        {{ form.last_name }}
-        {{ form.last_name.errors }}
-
-        <label for="id_contact_number">Contact Number</label>
-        {{ form.contact_number }}
-        {{ form.contact_number.errors }}
-
-        <label for="id_purpose">Purpose of Visit</label>
-        {{ form.purpose }}
-        {{ form.purpose.errors }}
-
-        <hr>
-
-        <h3>Valid ID</h3>
-        <p class="help">Upload an ID image or take a photo using your camera.</p>
-
-        <label for="id_document">Upload ID Image (JPG or PNG)</label>
-        <input
-            type="file"
-            name="id_document"
-            id="id_document"
-            accept="image/jpeg,image/png"
-        >
-        {{ form.id_document.errors }}
-
-        <div class="camera-section">
-            <h3>Take a Photo of Your ID</h3>
-
-            <video id="cameraPreview" autoplay playsinline muted hidden></video>
-
-            <img id="capturedPreview" alt="Captured ID preview" hidden>
-
-            <canvas id="cameraCanvas" hidden></canvas>
-
-            <button type="button" id="openCamera">Open Camera</button>
-            <button type="button" id="capturePhoto" disabled>Capture Photo</button>
-            <button type="button" id="retakePhoto" hidden>Retake Photo</button>
-
-            <input
-                type="file"
-                name="camera_capture"
-                id="camera_capture"
-                accept="image/jpeg,image/png"
-                hidden
-            >
-
-            <p id="cameraMessage" role="status"></p>
+        <div class="icon-container">
+            <i class="fa-solid fa-location-dot"></i>
         </div>
 
-        <button type="submit" class="submit-button">Register Visitor</button>
-    </form>
+        <h2 class="title">Verify Your Location</h2>
+
+        <p class="description">
+            Please allow location access so we can check if you are
+            within the school premises before registering your visit.
+        </p>
+
+        <div class="status-box">
+            <div class="status-left">
+                <div class="status-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+
+                <div class="status-text">
+                    <h4>Location Status</h4>
+                    <p id="locationMessage"
+                       role="status"
+                       aria-live="polite">
+                        Not verified yet.
+                    </p>
+                </div>
+            </div>
+
+            <div class="status-badge" id="locationBadge">
+                Location not verified
+            </div>
+        </div>
+
+        <button type="button"
+                class="btn-verify"
+                id="verifyLocation">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            Verify My Location
+        </button>
+
+        <div class="footer-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <p>
+                Your location is used for verification purposes.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- VISITOR REGISTRATION -->
+    <section id="visitorSection" hidden>
+
+        <div class="header">
+            <div class="header-icon">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div>
+                <h1>VisitLog Sign In</h1>
+                <p>
+                    Fill in the required information to register your visit.
+                </p>
+            </div>
+        </div>
+
+        <!-- IMPORTANT: Use the existing visitor_registration URL -->
+        <form id="visitorForm"
+              method="post"
+              action="{% url 'visitor_registration' %}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <!-- FIRST NAME -->
+            <div class="form-group">
+                <label for="first_name">
+                    First Name <span class="required">*</span>
+                </label>
+
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text"
+                           id="first_name"
+                           name="first_name"
+                           placeholder="Enter first name"
+                           autocomplete="given-name"
+                           required>
+                </div>
+            </div>
+
+            <!-- MIDDLE NAME -->
+            <div class="form-group">
+                <label for="middle_name">Middle Name (Optional)</label>
+
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text"
+                           id="middle_name"
+                           name="middle_name"
+                           placeholder="Enter middle name"
+                           autocomplete="additional-name">
+                </div>
+            </div>
+
+            <!-- LAST NAME -->
+            <div class="form-group">
+                <label for="last_name">
+                    Last Name <span class="required">*</span>
+                </label>
+
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text"
+                           id="last_name"
+                           name="last_name"
+                           placeholder="Enter last name"
+                           autocomplete="family-name"
+                           required>
+                </div>
+            </div>
+
+            <!-- CONTACT NUMBER -->
+            <div class="form-group">
+                <label for="contact_number">
+                    Contact Number <span class="required">*</span>
+                </label>
+
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel"
+                           id="contact_number"
+                           name="contact_number"
+                           placeholder="Enter mobile number"
+                           autocomplete="tel"
+                           required>
+                </div>
+            </div>
+
+            <!-- DATE AND TIME DISPLAY -->
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="currentDate">Date</label>
+
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-calendar"></i>
+                        <input type="text"
+                               id="currentDate"
+                               placeholder="Auto-filled"
+                               readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentTime">Time</label>
+
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-clock"></i>
+                        <input type="text"
+                               id="currentTime"
+                               placeholder="Auto-filled"
+                               readonly>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PURPOSE OF VISIT -->
+            <div class="form-group">
+                <label for="purpose">
+                    Purpose of Visit <span class="required">*</span>
+                </label>
+
+                <div class="input-wrapper select-wrapper">
+                    <i class="fa-regular fa-file-lines"></i>
+
+                    <select id="purpose" name="purpose" required>
+                        <option value="" disabled selected hidden>
+                            Select purpose of visit
+                        </option>
+                        <option value="meeting">
+                            Meeting / Consultation
+                        </option>
+                        <option value="delivery">
+                            Delivery / Pickup
+                        </option>
+                        <option value="interview">
+                            Job Interview
+                        </option>
+                        <option value="maintenance">
+                            Maintenance / Repair
+                        </option>
+                        <option value="personal">
+                            Personal Visit
+                        </option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CAPTURE OR UPLOAD ID -->
+            <div class="capture-section">
+
+                <div class="capture-header">
+                    <div class="capture-title">
+
+                        <div class="capture-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+
+                        <div>
+                            <h3>
+                                Capture ID
+                                <span class="required">*</span>
+                            </h3>
+                            <p>Take a photo of your valid ID.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Live camera preview -->
+                <video id="cameraPreview"
+                       autoplay
+                       playsinline
+                       hidden></video>
+
+                <!-- Canvas used to capture a photo -->
+                <canvas id="cameraCanvas" hidden></canvas>
+
+                <!-- Preview of captured photo -->
+                <img id="capturedImage"
+                     alt="Captured ID preview"
+                     hidden>
+
+                <!-- Camera controls -->
+                <div class="camera-actions">
+
+                    <button type="button"
+                            id="openCamera"
+                            class="btn-camera">
+                        <i class="fa-solid fa-camera"></i>
+                        Open Camera
+                    </button>
+
+                    <button type="button"
+                            id="capturePhoto"
+                            class="btn-camera"
+                            hidden>
+                        <i class="fa-solid fa-camera-retro"></i>
+                        Capture
+                    </button>
+
+                    <button type="button"
+                            id="retakePhoto"
+                            class="btn-camera"
+                            hidden>
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Retake
+                    </button>
+
+                </div>
+
+                <!-- ID file upload -->
+                <label for="id_document">Or upload your ID</label>
+
+                <div class="upload-area">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                    <h4>Add Files</h4>
+
+                    <p>
+                        Upload or choose a file (JPG or PNG, max. 5 MB).
+                    </p>
+
+                    <input type="file"
+                           id="id_document"
+                           name="id_document"
+                           accept="image/jpeg,image/png"
+                           required>
+                </div>
+
+            </div>
+
+            <!-- SUBMIT VISITOR REGISTRATION -->
+            <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Sign In
+            </button>
+
+        </form>
+
+    </section>
+
 </div>
 
-<script src="{% static 'visitors/camera.js' %}" defer></script>
+<!-- DATE AND TIME DISPLAY -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const dateField = document.getElementById("currentDate");
+    const timeField = document.getElementById("currentTime");
+
+    function updateDateTime() {
+        const now = new Date();
+
+        dateField.value = now.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
+
+        timeField.value = now.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    updateDateTime();
+});
+</script>
+
+<!-- LOCATION VERIFICATION SCRIPT -->
 <script src="{% static 'visitors/location.js' %}" defer></script>
+
+<!-- CAMERA SCRIPT -->
+<script src="{% static 'visitors/camera.js' %}" defer></script>
+
 </body>
 </html>
