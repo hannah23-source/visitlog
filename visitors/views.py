@@ -1,3 +1,4 @@
+
 import json
 import math
 
@@ -34,7 +35,7 @@ def get_valid_coordinates(data):
 def check_location(request):
     """Check whether the visitor is inside the school geofence."""
 
-    # Clear previous verification before checking a new location.
+    # Clear any previous verification before checking again.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
@@ -49,6 +50,11 @@ def check_location(request):
         TypeError,
         ValueError,
     ):
+        print(
+            "Location check failed: invalid location data.",
+            flush=True,
+        )
+
         return JsonResponse(
             {
                 "allowed": False,
@@ -57,15 +63,20 @@ def check_location(request):
             status=400,
         )
 
+    # Calculate the distance from the school coordinates.
     distance = get_school_distance(latitude, longitude)
-    allowed = distance <= 200
 
-    # Print diagnostic information in the server logs.
+    # Allow verification only within 200 meters.
+    radius_meters = 200
+    allowed = distance <= radius_meters
+
+    # Print diagnostic information immediately to Render logs.
     print(
         f"Location check: latitude={latitude}, "
         f"longitude={longitude}, "
         f"distance={distance:.1f} meters, "
-        f"allowed={allowed}"
+        f"allowed={allowed}",
+        flush=True,
     )
 
     if allowed:
@@ -73,26 +84,30 @@ def check_location(request):
         request.session["verified_latitude"] = latitude
         request.session["verified_longitude"] = longitude
 
-        return JsonResponse({
-            "allowed": True,
+        return JsonResponse(
+            {
+                "allowed": True,
+                "message": (
+                    "Location verified. "
+                    f"Distance from school: {distance:.1f} meters."
+                ),
+                "distance_meters": round(distance, 1),
+                "radius_meters": radius_meters,
+            }
+        )
+
+    return JsonResponse(
+        {
+            "allowed": False,
             "message": (
-                f"Location verified. Distance from school: "
-                f"{distance:.1f} meters."
+                "You are outside the school location. "
+                f"Detected distance: {distance:.1f} meters; "
+                f"allowed radius: {radius_meters} meters."
             ),
             "distance_meters": round(distance, 1),
-            "radius_meters": 200,
-        })
-
-    return JsonResponse({
-        "allowed": False,
-        "message": (
-            f"You are outside the school location. "
-            f"Detected distance: {distance:.1f} meters; "
-            f"allowed radius: 200 meters."
-        ),
-        "distance_meters": round(distance, 1),
-        "radius_meters": 200,
-    })
+            "radius_meters": radius_meters,
+        }
+    )
 
 
 def visitor_registration(request):
@@ -100,7 +115,7 @@ def visitor_registration(request):
 
     if request.method == "POST":
 
-        # Do not save a visitor without location verification.
+        # Require location verification before saving a visitor.
         if request.session.get("location_verified") is not True:
             return JsonResponse(
                 {
@@ -122,7 +137,7 @@ def visitor_registration(request):
         if form.is_valid():
             form.save()
 
-            # Verification is only for one registration.
+            # Verification is valid for one registration only.
             request.session.pop("location_verified", None)
             request.session.pop("verified_latitude", None)
             request.session.pop("verified_longitude", None)
@@ -154,7 +169,7 @@ def staff_dashboard(request):
 
     today = timezone.localdate()
 
-    # Get all visitors, newest records first.
+    # Get visitor records, newest first.
     visitors = Visitor.objects.all().order_by("-time_in")
 
     search = request.GET.get("search", "").strip()
