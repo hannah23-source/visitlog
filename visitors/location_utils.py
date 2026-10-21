@@ -5,7 +5,7 @@ from math import radians, sin, cos, sqrt, atan2
 SCHOOL_LATITUDE = 10.530894609059814
 SCHOOL_LONGITUDE = 122.8434738513073
 
-# Allowed radius for testing
+# Allowed distance from the school
 SCHOOL_RADIUS_METERS = 200
 
 
@@ -27,7 +27,7 @@ def get_school_distance(latitude, longitude):
         * sin(lon_difference / 2) ** 2
     )
 
-    # Prevent floating-point rounding errors
+    # Protect against floating-point rounding errors
     a = max(0.0, min(1.0, a))
 
     distance = 2 * earth_radius * atan2(
@@ -39,7 +39,7 @@ def get_school_distance(latitude, longitude):
 
 
 def is_inside_school(latitude, longitude):
-    """Check whether coordinates are within the allowed school radius."""
+    """Check whether coordinates are within the school radius."""
 
     distance = get_school_distance(latitude, longitude)
 
