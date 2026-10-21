@@ -1,3 +1,4 @@
+
 import json
 import math
 
@@ -9,12 +10,13 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import VisitorForm
-from .location_utils import is_inside_school
+from .location_utils import get_school_distance
 from .models import Visitor
 
 
 def get_valid_coordinates(data):
     """Validate latitude and longitude from the browser."""
+
     latitude = float(data["latitude"])
     longitude = float(data["longitude"])
 
@@ -33,7 +35,7 @@ def get_valid_coordinates(data):
 def check_location(request):
     """Check whether the visitor is inside the school geofence."""
 
-    # Reset old verification before checking a new location.
+    # Clear previous verification before checking a new location.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
@@ -41,6 +43,7 @@ def check_location(request):
     try:
         data = json.loads(request.body)
         latitude, longitude = get_valid_coordinates(data)
+
     except (
         json.JSONDecodeError,
         KeyError,
@@ -55,19 +58,41 @@ def check_location(request):
             status=400,
         )
 
-    if is_inside_school(latitude, longitude):
+    distance = get_school_distance(latitude, longitude)
+    allowed = distance <= 200
+
+    # Print diagnostic information in the server logs.
+    print(
+        f"Location check: latitude={latitude}, "
+        f"longitude={longitude}, "
+        f"distance={distance:.1f} meters, "
+        f"allowed={allowed}"
+    )
+
+    if allowed:
         request.session["location_verified"] = True
         request.session["verified_latitude"] = latitude
         request.session["verified_longitude"] = longitude
 
         return JsonResponse({
             "allowed": True,
-            "message": "Location verified. You may proceed.",
+            "message": (
+                f"Location verified. Distance from school: "
+                f"{distance:.1f} meters."
+            ),
+            "distance_meters": round(distance, 1),
+            "radius_meters": 200,
         })
 
     return JsonResponse({
         "allowed": False,
-        "message": "You are outside the school location.",
+        "message": (
+            f"You are outside the school location. "
+            f"Detected distance: {distance:.1f} meters; "
+            f"allowed radius: 200 meters."
+        ),
+        "distance_meters": round(distance, 1),
+        "radius_meters": 200,
     })
 
 
@@ -117,7 +142,11 @@ def visitor_registration(request):
 
 def visitor_success(request):
     """Display the successful registration page."""
-    return render(request, "visitors/success.html")
+
+    return render(
+        request,
+        "visitors/success.html",
+    )
 
 
 @login_required
@@ -144,11 +173,15 @@ def staff_dashboard(request):
 
     # Filter by month.
     if month.isdigit() and 1 <= int(month) <= 12:
-        visitors = visitors.filter(time_in__month=int(month))
+        visitors = visitors.filter(
+            time_in__month=int(month)
+        )
 
     # Filter by year.
     if year.isdigit() and 2000 <= int(year) <= 2100:
-        visitors = visitors.filter(time_in__year=int(year))
+        visitors = visitors.filter(
+            time_in__year=int(year)
+        )
 
     context = {
         "total_visitors": Visitor.objects.count(),
@@ -166,5 +199,3 @@ def staff_dashboard(request):
         "visitors/staff_dashboard.html",
         context,
     )
-
-
