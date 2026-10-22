@@ -1,7 +1,10 @@
 
 import json
 import math
+from datetime import date, datetime, time, timedelta
 
+from django.conf import settings
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -33,9 +36,8 @@ def get_valid_coordinates(data):
 
 @require_POST
 def check_location(request):
-    """Verify that the visitor is within 200 meters of the school."""
+    """Allow visitors within 200 meters of the school."""
 
-    # Clear any previous verification before checking a new location.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
@@ -53,7 +55,10 @@ def check_location(request):
         return JsonResponse(
             {
                 "allowed": False,
-                "message": "Invalid location data. Please try again.",
+                "message": (
+                    "Unable to verify your location. "
+                    "Please enable location access and try again."
+                ),
             },
             status=400,
         )
@@ -85,29 +90,22 @@ def check_location(request):
         {
             "allowed": False,
             "message": (
-                "You are outside the school location. "
-                f"Distance: {distance:.1f} meters; "
-                f"allowed radius: {radius_meters} meters."
+                "You are not within the school premises. "
+                "Please proceed to the school location to register."
             ),
-            "distance_meters": round(distance, 1),
-            "radius_meters": radius_meters,
         }
     )
 
 
 def visitor_registration(request):
-    """Register a visitor only after successful location verification."""
+    """Register visitors only after location verification."""
 
     if request.method == "POST":
         if request.session.get("location_verified") is not True:
-            print(
-                "REGISTRATION BLOCKED: location session not verified.",
-                flush=True,
-            )
             return JsonResponse(
                 {
                     "error": (
-                        "Your location verification expired. "
+                        "Your location verification has expired. "
                         "Please verify your location again."
                     )
                 },
@@ -115,8 +113,6 @@ def visitor_registration(request):
             )
 
         files = request.FILES.copy()
-
-        # Use the captured camera image as the ID document if provided.
         camera_file = files.get("camera_capture")
 
         if camera_file:
@@ -132,22 +128,20 @@ def visitor_registration(request):
                 flush=True,
             )
 
-            # Clear verification after successful registration.
             request.session.pop("location_verified", None)
             request.session.pop("verified_latitude", None)
             request.session.pop("verified_longitude", None)
 
             return redirect("visitor_success")
 
-        print(
-            "VISITOR FORM ERRORS: " + form.errors.as_json(),
-            flush=True,
-        )
-
         return render(
             request,
             "visitors/registration.html",
-            {"form": form},
+            {
+                "form": form,
+                "show_registration": True,
+                "debug": settings.DEBUG,
+            },
             status=400,
         )
 
@@ -156,7 +150,11 @@ def visitor_registration(request):
     return render(
         request,
         "visitors/registration.html",
-        {"form": form},
+        {
+            "form": form,
+            "show_registration": False,
+            "debug": settings.DEBUG,
+        },
     )
 
 
@@ -168,15 +166,14 @@ def visitor_success(request):
 
 @login_required
 def staff_dashboard(request):
-    """Display visitor records and dashboard statistics."""
+    """Display visitor records with search and date filtering."""
 
     today = timezone.localdate()
-
     visitors = Visitor.objects.all().order_by("-time_in")
 
     search = request.GET.get("search", "").strip()
-    month = request.GET.get("month", "")
-    year = request.GET.get("year", "")
+    selected_date = request.GET.get("date", "").strip()
+    selected_purpose = request.GET.get("purpose", "").strip()
 
     if search:
         visitors = visitors.filter(
@@ -186,11 +183,35 @@ def staff_dashboard(request):
             | Q(contact_number__icontains=search)
         )
 
-    if month.isdigit() and 1 <= int(month) <= 12:
-        visitors = visitors.filter(time_in__month=int(month))
+    if selected_date:
+        try:
+            chosen_date = date.fromisoformat(selected_date)
 
-    if year.isdigit() and 2000 <= int(year) <= 2100:
-        visitors = visitors.filter(time_in__year=int(year))
+            start_datetime = timezone.make_aware(
+                datetime.combine(chosen_date, time.min),
+                timezone.get_current_timezone(),
+            )
+
+            end_datetime = timezone.make_aware(
+                datetime.combine(
+                    chosen_date + timedelta(days=1),
+                    time.min,
+                ),
+                timezone.get_current_timezone(),
+            )
+
+            visitors = visitors.filter(
+                time_in__gte=start_datetime,
+                time_in__lt=end_datetime,
+            )
+
+        except ValueError:
+            selected_date = ""
+
+    if selected_purpose:
+        visitors = visitors.filter(
+            purpose__iexact=selected_purpose
+        )
 
     context = {
         "total_visitors": Visitor.objects.count(),
@@ -199,8 +220,8 @@ def staff_dashboard(request):
         ).count(),
         "visitors": visitors,
         "search": search,
-        "selected_month": month,
-        "selected_year": year,
+        "selected_date": selected_date,
+        "selected_purpose": selected_purpose,
     }
 
     return render(
@@ -208,3 +229,11 @@ def staff_dashboard(request):
         "visitors/staff_dashboard.html",
         context,
     )
+
+
+@login_required
+def staff_logout(request):
+    """Log out staff and return to the login page."""
+
+    logout(request)
+    return redirect("staff_login")

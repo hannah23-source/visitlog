@@ -1,4 +1,5 @@
 
+
 document.addEventListener("DOMContentLoaded", () => {
     const verifyButton = document.getElementById("verifyLocation");
     const locationMessage = document.getElementById("locationMessage");
@@ -12,15 +13,21 @@ document.addEventListener("DOMContentLoaded", () => {
         !locationMessage ||
         !locationBadge ||
         !locationSection ||
-        !visitorSection ||
-        !visitorForm
+        !visitorSection
     ) {
         console.error("VisitLog: A required HTML element is missing.");
         return;
     }
 
-    // Keep the registration form hidden until location is verified.
-    visitorSection.hidden = true;
+    // If the server returned the registration form with validation errors,
+    // keep it visible instead of returning to location verification.
+    const registrationAlreadyVisible = !visitorSection.hidden;
+
+    if (registrationAlreadyVisible) {
+        locationSection.hidden = true;
+    } else {
+        visitorSection.hidden = true;
+    }
 
     verifyButton.addEventListener("click", () => {
         if (!navigator.geolocation) {
@@ -53,24 +60,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     const result = await response.json();
 
                     locationMessage.textContent =
-                        result.message || "Location verification failed.";
+                        result.message ||
+                        "Location verification failed.";
 
                     if (response.ok && result.allowed === true) {
                         locationBadge.textContent = "Location verified";
+
                         locationSection.hidden = true;
                         visitorSection.hidden = false;
-                        visitorForm.hidden = false;
+
+                        if (visitorForm) {
+                            visitorForm.hidden = false;
+                        }
                     } else {
-                        locationBadge.textContent = "Outside school location";
+                        locationBadge.textContent =
+                            "Outside school location";
+
                         visitorSection.hidden = true;
+                        locationSection.hidden = false;
+
                         verifyButton.disabled = false;
                         verifyButton.innerHTML =
                             '<i class="fa-solid fa-location-crosshairs"></i> Verify My Location';
                     }
                 } catch (error) {
-                    console.error("Location verification error:", error);
+                    console.error(
+                        "Location verification error:",
+                        error
+                    );
+
                     locationMessage.textContent =
                         "Could not verify your location. Please try again.";
+
                     locationBadge.textContent = "Verification failed";
                     verifyButton.disabled = false;
                     verifyButton.textContent = "Verify My Location";
@@ -106,7 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function getCookie(name) {
-        const cookies = document.cookie ? document.cookie.split(";") : [];
+        const cookies = document.cookie
+            ? document.cookie.split(";")
+            : [];
 
         for (const cookie of cookies) {
             const trimmedCookie = cookie.trim();
