@@ -1,619 +1,277 @@
 
-/* ========================================
-   VISITLOG - MAIN COLORS
-======================================== */
+/* Import Google Fonts */
+@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700\&display=swap)');
+
 :root {
-    --primary-blue: #2a5db0;
-    --primary-blue-dark: #1e4a91;
-    --primary-blue-light: #c7d8f4;
-    --background: #f4f7fc;
-    --text-dark: #222222;
-    --text-light: #7d8796;
-    --border-color: #d9e0ea;
-    --success: #198754;
-    --success-bg: #e4f6eb;
-    --danger: #d14d4d;
-    --danger-bg: #fdeaea;
-    --white: #ffffff;
+    --primary-blue: #2a5caa;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #d1d5db;
+    --bg-light-blue: #e3edfa;
+    --bg-body: #f8f9fa;
+    --danger-red: #dc2626;
 }
 
-/* ========================================
-   RESET
-======================================== */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-[hidden] {
-    display: none !important;
-}
-
-/* ========================================
-   PAGE
-======================================== */
 body {
-    font-family: 'Inter', Arial, sans-serif;
-    background-color: var(--background);
-    color: var(--text-dark);
-    min-height: 100vh;
+    background-color: var(--bg-body);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/* ========================================
-   MAIN CARD
-======================================== */
 .card {
+    background: white;
     width: 100%;
-    max-width: 600px;
-    padding: 40px;
-    background-color: var(--white);
-    border: 1px solid #e8edf5;
+    max-width: 500px;
     border-radius: 16px;
-    box-shadow: 0 10px 35px rgba(31, 65, 114, 0.08);
-    text-align: center;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* ========================================
-   HEADER
-======================================== */
+/* Header Section */
 .header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     margin-bottom: 30px;
 }
 
-.header-title {
+.header-icon {
+    background-color: #b3cff5;
     color: var(--primary-blue);
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-}
-
-.header-subtitle {
-    color: var(--text-light);
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-/* ========================================
-   ICON
-======================================== */
-.icon-container {
-    width: 78px;
-    height: 78px;
-    margin: 0 auto 22px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background-color: var(--primary-blue-light);
-    color: var(--primary-blue);
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 30px;
-}
-
-/* ========================================
-   SECTION TITLES
-======================================== */
-.title {
-    color: var(--primary-blue);
+    align-items: center;
     font-size: 24px;
+    flex-shrink: 0;
+}
+
+.header h1 {
+    color: var(--primary-blue);
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 12px;
-    text-align: center;
+    margin-bottom: 4px;
 }
 
-.description {
-    max-width: 440px;
-    margin: 0 auto 28px;
+.header p {
     color: var(--text-light);
-    font-size: 14px;
-    line-height: 1.7;
-    text-align: center;
-}
-
-/* ========================================
-   LOCATION STATUS BOX
-======================================== */
-.status-box {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    padding: 18px;
-    margin-bottom: 24px;
-    background-color: #edf3fd;
-    border: 1px solid #d9e6fa;
-    border-radius: 12px;
-    text-align: left;
-}
-
-.status-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    min-width: 0;
-}
-
-.status-icon {
-    width: 46px;
-    height: 46px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background-color: #d8e6fc;
-    color: var(--primary-blue);
-    font-size: 20px;
-}
-
-.status-text {
-    min-width: 0;
-    overflow-wrap: anywhere;
-}
-
-.status-text h4 {
-    color: var(--text-dark);
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.status-text p {
-    color: var(--text-light);
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.status-badge {
-    flex-shrink: 0;
-    padding: 7px 12px;
-    border-radius: 20px;
-    background-color: #fce7e7;
-    color: var(--danger);
-    font-size: 11px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.status-badge::before {
-    content: "";
-    width: 7px;
-    height: 7px;
-    flex-shrink: 0;
-    display: inline-block;
-    border-radius: 50%;
-    background-color: var(--danger);
-}
-
-/* Optional status classes for JavaScript */
-.status-badge.verified {
-    background-color: var(--success-bg);
-    color: var(--success);
-}
-
-.status-badge.verified::before {
-    background-color: var(--success);
-}
-
-.status-badge.error {
-    background-color: var(--danger-bg);
-    color: var(--danger);
-}
-
-/* ========================================
-   BUTTONS
-======================================== */
-button,
-input,
-select,
-textarea {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.btn-verify,
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-    min-height: 46px;
-    padding: 13px 18px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background-color 0.2s ease,
-                transform 0.2s ease;
-}
-
-.btn-verify,
-.btn-primary {
-    width: 100%;
-    color: var(--white);
-    background-color: var(--primary-blue);
-}
-
-.btn-verify:hover,
-.btn-primary:hover {
-    background-color: var(--primary-blue-dark);
-}
-
-.btn-secondary {
-    color: var(--primary-blue);
-    background-color: #e8effb;
-    border: 1px solid #d3e1f8;
-}
-
-.btn-secondary:hover {
-    background-color: #d8e6fc;
-}
-
-.btn-danger {
-    color: var(--white);
-    background-color: var(--danger);
-}
-
-.btn-danger:hover {
-    background-color: #b93636;
-}
-
-.btn-verify:disabled,
-.btn-primary:disabled,
-.btn-secondary:disabled,
-.btn-danger:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.btn-verify {
-    margin-bottom: 20px;
-}
-
-/* ========================================
-   FOOTER NOTE
-======================================== */
-.footer-note {
-    max-width: 430px;
-    margin: 20px auto 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 8px;
-    color: var(--text-light);
-    font-size: 12px;
-    line-height: 1.6;
-    text-align: left;
-}
-
-.footer-note i,
-.footer-note svg {
-    flex-shrink: 0;
-    margin-top: 3px;
-}
-
-/* ========================================
-   VISITOR REGISTRATION FORM
-======================================== */
-#visitorSection {
-    width: 100%;
-    text-align: left;
-}
-
-#visitorSection .title,
-#visitorSection .description {
-    text-align: center;
-}
-
-#visitorForm {
-    width: 100%;
-    text-align: left;
-}
-
-.form-group {
-    width: 100%;
-    margin-bottom: 18px;
-}
-
-.form-group label,
-#visitorForm label {
-    display: block;
-    margin-bottom: 7px;
-    color: #344054;
     font-size: 13px;
-    font-weight: 600;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 18px;
 }
 
 .form-row {
     display: flex;
-    gap: 14px;
-    width: 100%;
+    gap: 15px;
 }
 
-.form-row > * {
+.form-row .form-group {
     flex: 1;
-    min-width: 0;
 }
 
-#visitorForm input[type="text"],
-#visitorForm input[type="tel"],
-#visitorForm input[type="email"],
-#visitorForm input[type="date"],
-#visitorForm input[type="time"],
-#visitorForm input[type="file"],
-#visitorForm select,
-#visitorForm textarea {
-    width: 100%;
-    min-height: 44px;
-    padding: 11px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--white);
-    color: var(--text-dark);
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s ease,
-                box-shadow 0.2s ease;
-}
-
-#visitorForm input:focus,
-#visitorForm select:focus,
-#visitorForm textarea:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(42, 93, 176, 0.12);
-}
-
-#visitorForm input[readonly] {
-    background-color: #f5f7fa;
-    color: #667085;
-}
-
-#visitorForm select {
-    cursor: pointer;
-}
-
-#visitorForm textarea {
-    min-height: 90px;
-    resize: vertical;
-}
-
-#visitorForm input[type="file"] {
-    padding: 10px;
-    background-color: #f8faff;
-}
-
-#visitorForm input[type="file"]::file-selector-button {
-    margin-right: 10px;
-    padding: 7px 10px;
-    border: none;
-    border-radius: 5px;
-    color: var(--primary-blue);
-    background-color: #e5edfc;
-    cursor: pointer;
-}
-
-/* ========================================
-   CAMERA SECTION
-======================================== */
-.capture-section {
-    width: 100%;
-    margin: 22px 0;
-    padding: 18px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background-color: #f8faff;
-    text-align: left;
-}
-
-.capture-section h3 {
-    margin-bottom: 8px;
-    color: var(--text-dark);
-    font-size: 16px;
-}
-
-.capture-section > p {
-    margin-top: 8px;
-    color: var(--text-light);
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-#cameraPreview,
-#capturedImage {
+label {
     display: block;
-    width: 100%;
-    max-height: 320px;
-    margin: 12px auto;
-    border-radius: 8px;
-    background-color: #e9edf4;
-    object-fit: contain;
-}
-
-#cameraPreview {
-    min-height: 180px;
-}
-
-#capturedImage {
-    border: 1px solid var(--border-color);
-}
-
-#cameraCanvas {
-    display: none;
-}
-
-.camera-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.camera-actions button {
-    flex: 1;
-    min-width: 110px;
-}
-
-#id_document {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* ========================================
-   FORM ERRORS AND MESSAGES
-======================================== */
-.errorlist {
-    margin: 6px 0 10px;
-    padding-left: 18px;
-    color: var(--danger);
-    font-size: 12px;
-}
-
-.error-message {
-    margin: 12px 0;
-    padding: 12px;
-    border-radius: 8px;
-    color: var(--danger);
-    background-color: var(--danger-bg);
     font-size: 13px;
-    line-height: 1.5;
-}
-
-.success-message {
-    margin: 12px 0;
-    padding: 12px;
-    border-radius: 8px;
-    color: var(--success);
-    background-color: var(--success-bg);
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-/* ========================================
-   SUBMIT BUTTON
-======================================== */
-#visitorForm button[type="submit"] {
-    width: 100%;
-    min-height: 48px;
-    margin-top: 12px;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    color: var(--white);
-    background-color: var(--primary-blue);
-    font-size: 15px;
     font-weight: 600;
-    transition: background-color 0.2s ease;
+    color: var(--primary-blue);
+    margin-bottom: 6px;
 }
 
-#visitorForm button[type="submit"]:hover {
-    background-color: var(--primary-blue-dark);
+.required {
+    color: var(--danger-red);
 }
 
-/* ========================================
-   DJANGO ADMIN / GENERAL TABLES
-======================================== */
-table {
+/* Input Wrappers & Icons */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 14px;
+    color: #9ca3af;
+    font-size: 16px;
+    pointer-events: none; /* Prevents icon from blocking clicks */
+}
+
+/* Fix for Textarea Icon Alignment */
+.input-wrapper.textarea-wrapper {
+    align-items: flex-start; /* Aligns icon to the top */
+}
+
+.input-wrapper.textarea-wrapper i {
+    top: 14px; /* Pushes icon down slightly to match text */
+}
+
+/* General Inputs */
+input[type="text"],
+input[type="tel"] {
     width: 100%;
-    border-collapse: collapse;
+    padding: 12px 14px 12px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: white;
 }
 
-th,
-td {
-    padding: 10px;
-    border-bottom: 1px solid var(--border-color);
-    text-align: left;
+/* Textarea Specifics */
+textarea {
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: white;
+    resize: vertical;
+    min-height: 90px;
+    font-family: 'Inter', sans-serif;
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
-======================================== */
-@media (max-width: 600px) {
-    body {
-        align-items: flex-start;
-        padding: 14px;
-    }
-
-    .card {
-        padding: 28px 20px;
-        border-radius: 12px;
-    }
-
-    .header-title {
-        font-size: 26px;
-    }
-
-    .header-subtitle {
-        font-size: 13px;
-    }
-
-    .title {
-        font-size: 22px;
-    }
-
-    .description {
-        font-size: 13px;
-        margin-bottom: 22px;
-    }
-
-    .status-box {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 14px;
-    }
-
-    .status-left {
-        width: 100%;
-    }
-
-    .status-badge {
-        align-self: flex-start;
-    }
-
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .capture-section {
-        padding: 14px;
-    }
-
-    .camera-actions {
-        flex-direction: column;
-    }
-
-    .camera-actions button {
-        width: 100%;
-    }
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
 }
 
-@media (max-width: 360px) {
-    .card {
-        padding: 22px 14px;
-    }
+input:focus,
+textarea:focus {
+    border-color: var(--primary-blue);
+}
 
-    .header-title {
-        font-size: 23px;
-    }
+/* Capture ID Section */
+.capture-section {
+    background-color: var(--bg-light-blue);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
 
-    .icon-container {
-        width: 66px;
-        height: 66px;
-        font-size: 25px;
-    }
+.capture-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.capture-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.capture-icon {
+    background-color: #c3d9f7;
+    color: var(--primary-blue);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.capture-title h3 {
+    color: var(--primary-blue);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.capture-title p {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.btn-camera {
+    background: white;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-camera:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.upload-area {
+    background: white;
+    border: 2px dashed #a9c4eb;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.upload-area:hover {
+    background: #f8fbff;
+}
+
+.upload-area i {
+    color: var(--primary-blue);
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.upload-area h4 {
+    color: var(--primary-blue);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.upload-area p {
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #1e4685;
 }

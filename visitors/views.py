@@ -1,3 +1,4 @@
+
 import json
 import math
 
@@ -14,7 +15,7 @@ from .models import Visitor
 
 
 def get_valid_coordinates(data):
-    """Validate latitude and longitude from the browser."""
+    """Validate latitude and longitude received from the browser."""
 
     latitude = float(data["latitude"])
     longitude = float(data["longitude"])
@@ -32,8 +33,9 @@ def get_valid_coordinates(data):
 
 @require_POST
 def check_location(request):
-    """Check whether the visitor is inside the school geofence."""
+    """Verify that the visitor is within 200 meters of the school."""
 
+    # Clear any previous verification before checking a new location.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
@@ -48,11 +50,6 @@ def check_location(request):
         TypeError,
         ValueError,
     ):
-        print(
-            "Location check failed: invalid location data.",
-            flush=True,
-        )
-
         return JsonResponse(
             {
                 "allowed": False,
@@ -63,17 +60,14 @@ def check_location(request):
 
     distance = get_school_distance(latitude, longitude)
     radius_meters = 200
-    allowed = distance <= radius_meters
 
     print(
-        f"Location check: latitude={latitude}, "
-        f"longitude={longitude}, "
-        f"distance={distance:.1f} meters, "
-        f"allowed={allowed}",
+        f"Location check: distance={distance:.1f} meters, "
+        f"allowed={distance <= radius_meters}",
         flush=True,
     )
 
-    if allowed:
+    if distance <= radius_meters:
         request.session["location_verified"] = True
         request.session["verified_latitude"] = latitude
         request.session["verified_longitude"] = longitude
@@ -81,10 +75,7 @@ def check_location(request):
         return JsonResponse(
             {
                 "allowed": True,
-                "message": (
-                    "Location verified. "
-                    f"Distance from school: {distance:.1f} meters."
-                ),
+                "message": "Location verified successfully.",
                 "distance_meters": round(distance, 1),
                 "radius_meters": radius_meters,
             }
@@ -95,7 +86,7 @@ def check_location(request):
             "allowed": False,
             "message": (
                 "You are outside the school location. "
-                f"Detected distance: {distance:.1f} meters; "
+                f"Distance: {distance:.1f} meters; "
                 f"allowed radius: {radius_meters} meters."
             ),
             "distance_meters": round(distance, 1),
@@ -105,21 +96,27 @@ def check_location(request):
 
 
 def visitor_registration(request):
-    """Register a visitor after successful location verification."""
+    """Register a visitor only after successful location verification."""
 
     if request.method == "POST":
-
         if request.session.get("location_verified") is not True:
+            print(
+                "REGISTRATION BLOCKED: location session not verified.",
+                flush=True,
+            )
             return JsonResponse(
                 {
                     "error": (
-                        "Please verify your location before registering."
+                        "Your location verification expired. "
+                        "Please verify your location again."
                     )
                 },
                 status=403,
             )
 
         files = request.FILES.copy()
+
+        # Use the captured camera image as the ID document if provided.
         camera_file = files.get("camera_capture")
 
         if camera_file:
@@ -128,16 +125,33 @@ def visitor_registration(request):
         form = VisitorForm(request.POST, files)
 
         if form.is_valid():
-            form.save()
+            visitor = form.save()
 
+            print(
+                f"VISITOR SAVED SUCCESSFULLY: ID={visitor.pk}",
+                flush=True,
+            )
+
+            # Clear verification after successful registration.
             request.session.pop("location_verified", None)
             request.session.pop("verified_latitude", None)
             request.session.pop("verified_longitude", None)
 
             return redirect("visitor_success")
 
-    else:
-        form = VisitorForm()
+        print(
+            "VISITOR FORM ERRORS: " + form.errors.as_json(),
+            flush=True,
+        )
+
+        return render(
+            request,
+            "visitors/registration.html",
+            {"form": form},
+            status=400,
+        )
+
+    form = VisitorForm()
 
     return render(
         request,
@@ -149,10 +163,7 @@ def visitor_registration(request):
 def visitor_success(request):
     """Display the successful registration page."""
 
-    return render(
-        request,
-        "visitors/success.html",
-    )
+    return render(request, "visitors/success.html")
 
 
 @login_required
@@ -160,6 +171,7 @@ def staff_dashboard(request):
     """Display visitor records and dashboard statistics."""
 
     today = timezone.localdate()
+
     visitors = Visitor.objects.all().order_by("-time_in")
 
     search = request.GET.get("search", "").strip()
@@ -175,14 +187,10 @@ def staff_dashboard(request):
         )
 
     if month.isdigit() and 1 <= int(month) <= 12:
-        visitors = visitors.filter(
-            time_in__month=int(month)
-        )
+        visitors = visitors.filter(time_in__month=int(month))
 
     if year.isdigit() and 2000 <= int(year) <= 2100:
-        visitors = visitors.filter(
-            time_in__year=int(year)
-        )
+        visitors = visitors.filter(time_in__year=int(year))
 
     context = {
         "total_visitors": Visitor.objects.count(),
@@ -200,4 +208,3 @@ def staff_dashboard(request):
         "visitors/staff_dashboard.html",
         context,
     )
-
