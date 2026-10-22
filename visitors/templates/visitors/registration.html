@@ -17,6 +17,13 @@
           rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'visitors/style.css' %}">
+
+    <!-- Ensure hidden camera controls stay hidden until needed -->
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -95,7 +102,6 @@
             </div>
         </div>
 
-        <!-- IMPORTANT: Use the existing visitor_registration URL -->
         <form id="visitorForm"
               method="post"
               action="{% url 'visitor_registration' %}"
@@ -168,7 +174,7 @@
                 </div>
             </div>
 
-            <!-- DATE AND TIME DISPLAY -->
+            <!-- DATE AND TIME -->
             <div class="form-row">
 
                 <div class="form-group">
@@ -210,21 +216,11 @@
                         <option value="" disabled selected hidden>
                             Select purpose of visit
                         </option>
-                        <option value="meeting">
-                            Meeting / Consultation
-                        </option>
-                        <option value="delivery">
-                            Delivery / Pickup
-                        </option>
-                        <option value="interview">
-                            Job Interview
-                        </option>
-                        <option value="maintenance">
-                            Maintenance / Repair
-                        </option>
-                        <option value="personal">
-                            Personal Visit
-                        </option>
+                        <option value="meeting">Meeting / Consultation</option>
+                        <option value="delivery">Delivery / Pickup</option>
+                        <option value="interview">Job Interview</option>
+                        <option value="maintenance">Maintenance / Repair</option>
+                        <option value="personal">Personal Visit</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
@@ -260,12 +256,12 @@
                 <!-- Canvas used to capture a photo -->
                 <canvas id="cameraCanvas" hidden></canvas>
 
-                <!-- Preview of captured photo -->
+                <!-- Captured photo preview -->
                 <img id="capturedImage"
                      alt="Captured ID preview"
                      hidden>
 
-                <!-- Camera controls -->
+                <!-- CAMERA CONTROLS -->
                 <div class="camera-actions">
 
                     <button type="button"
@@ -277,10 +273,18 @@
 
                     <button type="button"
                             id="capturePhoto"
-                            class="btn-camera"
+                            class="btn-camera btn-capture"
                             hidden>
                         <i class="fa-solid fa-camera-retro"></i>
                         Capture
+                    </button>
+
+                    <button type="button"
+                            id="cancelCamera"
+                            class="btn-camera btn-cancel-camera"
+                            hidden>
+                        <i class="fa-solid fa-xmark"></i>
+                        Cancel
                     </button>
 
                     <button type="button"
@@ -293,7 +297,12 @@
 
                 </div>
 
-                <!-- ID file upload -->
+                <!-- CAMERA STATUS MESSAGE -->
+                <p id="cameraMessage"
+                   role="status"
+                   aria-live="polite"></p>
+
+                <!-- ID FILE UPLOAD -->
                 <label for="id_document">Or upload your ID</label>
 
                 <div class="upload-area">
@@ -308,13 +317,12 @@
                     <input type="file"
                            id="id_document"
                            name="id_document"
-                           accept="image/jpeg,image/png"
-                           required>
+                           accept="image/jpeg,image/png">
                 </div>
 
             </div>
 
-            <!-- SUBMIT VISITOR REGISTRATION -->
+            <!-- SUBMIT REGISTRATION -->
             <button type="submit" class="btn-submit">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 Sign In
@@ -326,7 +334,7 @@
 
 </div>
 
-<!-- DATE AND TIME DISPLAY -->
+<!-- DATE AND TIME -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const dateField = document.getElementById("currentDate");
@@ -351,10 +359,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-<!-- LOCATION VERIFICATION SCRIPT -->
+<!-- LOCATION VERIFICATION -->
 <script src="{% static 'visitors/location.js' %}" defer></script>
 
-<!-- CAMERA SCRIPT -->
+<!-- CAMERA CONTROLS -->
 <script src="{% static 'visitors/camera.js' %}" defer></script>
 
 </body>
