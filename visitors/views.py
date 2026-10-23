@@ -34,13 +34,32 @@ def get_valid_coordinates(data):
     return latitude, longitude
 
 
+def location_bypass_enabled():
+    """Return True only when temporary location bypass is enabled."""
+
+    return getattr(settings, "ALLOW_LOCATION_BYPASS", False) is True
+
+
 @require_POST
 def check_location(request):
-    """Allow visitors within 200 meters of the school."""
+    """Check whether a visitor is within 200 meters of the school."""
 
+    # Clear any previous verification before checking again.
     request.session.pop("location_verified", None)
     request.session.pop("verified_latitude", None)
     request.session.pop("verified_longitude", None)
+
+    # Temporary testing mode: skip location verification.
+    if location_bypass_enabled():
+        request.session["location_verified"] = True
+
+        return JsonResponse(
+            {
+                "allowed": True,
+                "message": "Location check bypassed for testing.",
+                "testing_mode": True,
+            }
+        )
 
     try:
         data = json.loads(request.body)
@@ -98,10 +117,17 @@ def check_location(request):
 
 
 def visitor_registration(request):
-    """Register visitors only after location verification."""
+    """Register visitors after location verification or during testing."""
+
+    bypass_enabled = location_bypass_enabled()
 
     if request.method == "POST":
-        if request.session.get("location_verified") is not True:
+
+        # Require location verification unless testing mode is enabled.
+        if (
+            request.session.get("location_verified") is not True
+            and not bypass_enabled
+        ):
             return JsonResponse(
                 {
                     "error": (
@@ -113,6 +139,8 @@ def visitor_registration(request):
             )
 
         files = request.FILES.copy()
+
+        # Use camera capture as the ID document if provided.
         camera_file = files.get("camera_capture")
 
         if camera_file:
@@ -128,6 +156,7 @@ def visitor_registration(request):
                 flush=True,
             )
 
+            # Clear verification after successful registration.
             request.session.pop("location_verified", None)
             request.session.pop("verified_latitude", None)
             request.session.pop("verified_longitude", None)
@@ -152,7 +181,7 @@ def visitor_registration(request):
         "visitors/registration.html",
         {
             "form": form,
-            "show_registration": False,
+            "show_registration": bypass_enabled,
             "debug": settings.DEBUG,
         },
     )
