@@ -26,7 +26,6 @@ elif os.name == "nt":
     windows_tesseract_path = (
         r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     )
-
     if os.path.isfile(windows_tesseract_path):
         pytesseract.pytesseract.tesseract_cmd = (
             windows_tesseract_path
@@ -36,19 +35,16 @@ elif os.name == "nt":
 def normalize_text(text):
     """Normalize text for name comparison."""
     text = unicodedata.normalize("NFKD", text)
-
     text = "".join(
         char
         for char in text
         if not unicodedata.combining(char)
     )
-
-    text = text.lower()
-    return re.sub(r"[^a-z0-9]+", " ", text).strip()
+    return re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
 
 
 def name_appears_in_text(name, ocr_text):
-    """Compare entered name words with OCR words."""
+    """Check whether a name appears in OCR text."""
     normalized_name = normalize_text(name)
     normalized_text = normalize_text(ocr_text)
 
@@ -59,6 +55,10 @@ def name_appears_in_text(name, ocr_text):
     ocr_words = normalized_text.split()
 
     for name_word in name_words:
+        # Exact matches are preferred; allow minor OCR mistakes.
+        if name_word in ocr_words:
+            continue
+
         best_similarity = max(
             (
                 SequenceMatcher(
@@ -93,55 +93,63 @@ class VisitorForm(forms.ModelForm):
 
         if not file:
             raise forms.ValidationError(
-                "Please upload or capture an image of your valid ID."
+                "Please upload or capture a photo of your valid ID."
             )
 
-        allowed_types = {"image/jpeg", "image/png"}
-
-        if file.content_type not in allowed_types:
-            raise forms.ValidationError(
-                "Upload a JPG or PNG image only."
-            )
-
-        # Maximum upload size: 5 MB.
         if file.size > 5 * 1024 * 1024:
             raise forms.ValidationError(
                 "File size must not exceed 5 MB."
             )
 
+        allowed_types = {"image/jpeg", "image/png"}
+        if file.content_type not in allowed_types:
+            raise forms.ValidationError(
+                "Upload a JPG or PNG image of your ID only."
+            )
+
         try:
-            # Check that the file is a valid image.
             file.seek(0)
+
+            # Verify the image's actual format, not only its filename.
             with Image.open(file) as original:
+                if original.format not in {"JPEG", "PNG"}:
+                    raise forms.ValidationError(
+                        "Please upload a valid JPG or PNG ID image."
+                    )
                 original.verify()
 
-            # Reopen and prepare a smaller image.
             file.seek(0)
-            with Image.open(file) as original:
-                image = ImageOps.exif_transpose(original)
-                image = ImageOps.grayscale(image)
 
-                # Limit image dimensions to reduce memory use.
+            with Image.open(file) as original:
+                # Correct phone-camera rotation before OCR.
+                image = ImageOps.exif_transpose(original)
+
+                # Resize BEFORE grayscale and contrast processing.
+                # This reduces memory usage on the Render server.
                 image.thumbnail(
-                    (1600, 1600),
+                    (1200, 1200),
                     Image.Resampling.LANCZOS,
                 )
 
-                image = ImageEnhance.Contrast(image).enhance(1.5)
+                image = image.convert("L")
+                image = ImageEnhance.Contrast(image).enhance(1.4)
 
-                # Run OCR once, with an 8-second timeout.
+                # Run OCR only once to reduce processing time.
                 try:
                     ocr_text = pytesseract.image_to_string(
                         image,
                         lang="eng",
                         config="--oem 3 --psm 6",
-                        timeout=8,
+                        timeout=12,
                     )
                 except RuntimeError:
                     raise forms.ValidationError(
                         "ID verification took too long. "
-                        "Please try a smaller, clearer JPG or PNG image."
+                        "Please use a clear, well-lit photo of your ID."
                     )
+
+        except forms.ValidationError:
+            raise
 
         except pytesseract.TesseractNotFoundError:
             raise forms.ValidationError(
@@ -168,28 +176,28 @@ class VisitorForm(forms.ModelForm):
         finally:
             file.seek(0)
 
-        # Require readable text from the ID.
-        if len(normalize_text(ocr_text)) < 3:
+        # Require enough readable text to attempt name matching.
+        normalized_ocr = normalize_text(ocr_text)
+
+        if len(normalized_ocr) < 3:
             raise forms.ValidationError(
                 "No readable text was found. "
-                "Please take a clearer photo of your Student ID."
+                "Please take a clear photo of your ID."
             )
 
         first_name = self.cleaned_data.get("first_name", "")
         last_name = self.cleaned_data.get("last_name", "")
 
-        first_matches = name_appears_in_text(
-            first_name, ocr_text
-        )
-        last_matches = name_appears_in_text(
-            last_name, ocr_text
-        )
-
-        if not first_matches or not last_matches:
+        if not name_appears_in_text(first_name, ocr_text):
             raise forms.ValidationError(
-                "The name you entered does not match the name "
-                "read from your ID. Please check your name and "
-                "try a clear, well-lit photo of your Student ID."
+                "Your first name does not match the name read "
+                "from your ID. Please check your entry and photo."
+            )
+
+        if not name_appears_in_text(last_name, ocr_text):
+            raise forms.ValidationError(
+                "Your surname does not match the name read "
+                "from your ID. Please check your entry and photo."
             )
 
         file.seek(0)
