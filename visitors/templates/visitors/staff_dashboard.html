@@ -1,3 +1,4 @@
+
 {% load static tz %}
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +70,6 @@
     </div>
 </header>
 
-
 <!-- MAIN CONTENT -->
 <main class="main-content">
 
@@ -80,34 +80,27 @@
 
         <!-- Today's Visitors -->
         <div class="card stat-card">
-
             <div class="stat-header">
                 <i class="fa-regular fa-calendar-days"></i>
                 <h3>Today's Visitors</h3>
             </div>
 
             <h2>{{ today_visitors|default:0 }}</h2>
-
             <div class="stat-line"></div>
-
         </div>
 
         <!-- Total Visitors -->
         <div class="card stat-card">
-
             <div class="stat-header">
                 <i class="fa-solid fa-users"></i>
                 <h3>Total Visitors</h3>
             </div>
 
             <h2>{{ total_visitors|default:0 }}</h2>
-
             <div class="stat-line"></div>
-
         </div>
 
     </section>
-
 
     <!-- SEARCH AND FILTERS -->
     <section class="card filter-section">
@@ -120,7 +113,6 @@
 
                 <!-- Search -->
                 <div class="input-group">
-
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
 
                     <input
@@ -129,12 +121,10 @@
                         placeholder="Search name or contact number..."
                         value="{{ search|default:'' }}"
                     >
-
                 </div>
 
                 <!-- Date Picker -->
                 <div class="input-group date-filter">
-
                     <label for="selectedDate">Select Date</label>
 
                     <input
@@ -143,12 +133,10 @@
                         name="date"
                         value="{{ selected_date|default:'' }}"
                     >
-
                 </div>
 
                 <!-- Purpose Dropdown -->
                 <div class="input-group">
-
                     <select name="purpose">
 
                         <option
@@ -159,24 +147,17 @@
                         </option>
 
                         <option
-                            value="Meeting"
-                            {% if selected_purpose == "Meeting" %}selected{% endif %}
+                            value="Official Meeting"
+                            {% if selected_purpose == "Official Meeting" %}selected{% endif %}
                         >
-                            Meeting
+                            Official Meeting
                         </option>
 
                         <option
-                            value="Interview"
-                            {% if selected_purpose == "Interview" %}selected{% endif %}
+                            value="Academic Consultation"
+                            {% if selected_purpose == "Academic Consultation" %}selected{% endif %}
                         >
-                            Interview
-                        </option>
-
-                        <option
-                            value="Official Business"
-                            {% if selected_purpose == "Official Business" %}selected{% endif %}
-                        >
-                            Official Business
+                            Academic Consultation
                         </option>
 
                         <option
@@ -187,35 +168,48 @@
                         </option>
 
                         <option
-                            value="School Inquiry"
-                            {% if selected_purpose == "School Inquiry" %}selected{% endif %}
+                            value="Document Request"
+                            {% if selected_purpose == "Document Request" %}selected{% endif %}
                         >
-                            School Inquiry
+                            Document Request
                         </option>
 
                         <option
-                            value="Student-Related Concern"
-                            {% if selected_purpose == "Student-Related Concern" %}selected{% endif %}
+                            value="Enrollment Inquiry"
+                            {% if selected_purpose == "Enrollment Inquiry" %}selected{% endif %}
                         >
-                            Student-Related Concern
+                            Enrollment Inquiry
                         </option>
 
                         <option
-                            value="Parent/Guardian Visit"
-                            {% if selected_purpose == "Parent/Guardian Visit" %}selected{% endif %}
+                            value="Student Visit"
+                            {% if selected_purpose == "Student Visit" %}selected{% endif %}
                         >
-                            Parent/Guardian Visit
+                            Student Visit
                         </option>
 
                         <option
-                            value="Other"
-                            {% if selected_purpose == "Other" %}selected{% endif %}
+                            value="Business Transaction"
+                            {% if selected_purpose == "Business Transaction" %}selected{% endif %}
                         >
-                            Other
+                            Business Transaction
+                        </option>
+
+                        <option
+                            value="Parent-Teacher Meeting"
+                            {% if selected_purpose == "Parent-Teacher Meeting" %}selected{% endif %}
+                        >
+                            Parent-Teacher Meeting
+                        </option>
+
+                        <option
+                            value="Others"
+                            {% if selected_purpose == "Others" %}selected{% endif %}
+                        >
+                            Others
                         </option>
 
                     </select>
-
                 </div>
 
                 <!-- Apply Filters -->
@@ -234,24 +228,19 @@
                 </a>
 
             </div>
-
         </form>
-
     </section>
-
 
     <!-- VISITOR HISTORY -->
     <section class="card table-section">
 
         <div class="table-header">
-
             <h3>Visitor History</h3>
 
             <span>
                 {{ visitors|length }}
                 record{{ visitors|length|pluralize }}
             </span>
-
         </div>
 
         <div class="table-wrapper">
@@ -315,15 +304,11 @@
                     {% endfor %}
 
                 </tbody>
-
             </table>
-
         </div>
-
     </section>
 
 </main>
 
 </body>
 </html>
-```

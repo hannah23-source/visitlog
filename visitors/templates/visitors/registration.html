@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -243,34 +242,49 @@
                             Select purpose of visit
                         </option>
 
-                        <option value="meeting"
-                                {% if form.purpose.value == "meeting" %}selected{% endif %}>
-                            Meeting / Consultation
+                        <option value="Official Meeting"
+                                {% if form.purpose.value == "Official Meeting" %}selected{% endif %}>
+                            Official Meeting
                         </option>
 
-                        <option value="delivery"
-                                {% if form.purpose.value == "delivery" %}selected{% endif %}>
-                            Delivery / Pickup
+                        <option value="Academic Consultation"
+                                {% if form.purpose.value == "Academic Consultation" %}selected{% endif %}>
+                            Academic Consultation
                         </option>
 
-                        <option value="interview"
-                                {% if form.purpose.value == "interview" %}selected{% endif %}>
-                            Job Interview
+                        <option value="Document Submission"
+                                {% if form.purpose.value == "Document Submission" %}selected{% endif %}>
+                            Document Submission
                         </option>
 
-                        <option value="maintenance"
-                                {% if form.purpose.value == "maintenance" %}selected{% endif %}>
-                            Maintenance / Repair
+                        <option value="Document Request"
+                                {% if form.purpose.value == "Document Request" %}selected{% endif %}>
+                            Document Request
                         </option>
 
-                        <option value="personal"
-                                {% if form.purpose.value == "personal" %}selected{% endif %}>
-                            Personal Visit
+                        <option value="Enrollment Inquiry"
+                                {% if form.purpose.value == "Enrollment Inquiry" %}selected{% endif %}>
+                            Enrollment Inquiry
                         </option>
 
-                        <option value="other"
-                                {% if form.purpose.value == "other" %}selected{% endif %}>
-                            Other
+                        <option value="Student Visit"
+                                {% if form.purpose.value == "Student Visit" %}selected{% endif %}>
+                            Student Visit
+                        </option>
+
+                        <option value="Business Transaction"
+                                {% if form.purpose.value == "Business Transaction" %}selected{% endif %}>
+                            Business Transaction
+                        </option>
+
+                        <option value="Parent-Teacher Meeting"
+                                {% if form.purpose.value == "Parent-Teacher Meeting" %}selected{% endif %}>
+                            Parent-Teacher Meeting
+                        </option>
+
+                        <option value="Others"
+                                {% if form.purpose.value == "Others" %}selected{% endif %}>
+                            Others
                         </option>
                     </select>
                 </div>
