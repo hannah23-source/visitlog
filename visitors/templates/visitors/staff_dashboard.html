@@ -1,5 +1,4 @@
-
-{% load static %}
+{% load static tz %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +25,7 @@
 
 <body>
 
-<!-- ===== TOP NAVIGATION ===== -->
-
+<!-- TOP NAVIGATION -->
 <header class="topbar">
 
     <div class="logo-area">
@@ -72,18 +70,15 @@
 </header>
 
 
-<!-- ===== MAIN CONTENT ===== -->
-
+<!-- MAIN CONTENT -->
 <main class="main-content">
 
     <h2 class="page-title">Dashboard Overview</h2>
 
-
-    <!-- ===== DASHBOARD STATISTICS ===== -->
-
+    <!-- DASHBOARD STATISTICS -->
     <section class="overview-cards">
 
-        <!-- Today's Visitors FIRST -->
+        <!-- Today's Visitors -->
         <div class="card stat-card">
 
             <div class="stat-header">
@@ -97,8 +92,7 @@
 
         </div>
 
-
-        <!-- Total Visitors SECOND -->
+        <!-- Total Visitors -->
         <div class="card stat-card">
 
             <div class="stat-header">
@@ -115,8 +109,7 @@
     </section>
 
 
-    <!-- ===== SEARCH AND FILTERS ===== -->
-
+    <!-- SEARCH AND FILTERS -->
     <section class="card filter-section">
 
         <h3>Search &amp; Filter</h3>
@@ -139,8 +132,7 @@
 
                 </div>
 
-
-                <!-- Single Date Picker -->
+                <!-- Date Picker -->
                 <div class="input-group date-filter">
 
                     <label for="selectedDate">Select Date</label>
@@ -153,7 +145,6 @@
                     >
 
                 </div>
-
 
                 <!-- Purpose Dropdown -->
                 <div class="input-group">
@@ -227,13 +218,11 @@
 
                 </div>
 
-
                 <!-- Apply Filters -->
                 <button type="submit" class="btn-search">
                     <i class="fa-solid fa-filter"></i>
                     Apply Filters
                 </button>
-
 
                 <!-- Reset Filters -->
                 <a
@@ -251,8 +240,7 @@
     </section>
 
 
-    <!-- ===== VISITOR HISTORY ===== -->
-
+    <!-- VISITOR HISTORY -->
     <section class="card table-section">
 
         <div class="table-header">
@@ -265,7 +253,6 @@
             </span>
 
         </div>
-
 
         <div class="table-wrapper">
 
@@ -280,7 +267,6 @@
                         <th>Time In</th>
                     </tr>
                 </thead>
-
 
                 <tbody>
 
@@ -299,21 +285,21 @@
                             {{ visitor.last_name }}
                         </td>
 
-
                         <!-- Contact Number -->
                         <td>{{ visitor.contact_number }}</td>
-
 
                         <!-- Purpose of Visit -->
                         <td>{{ visitor.purpose }}</td>
 
+                        <!-- Date: Philippine time -->
+                        <td>
+                            {{ visitor.time_in|timezone:"Asia/Manila"|date:"M d, Y" }}
+                        </td>
 
-                        <!-- Date -->
-                        <td>{{ visitor.time_in|date:"M d, Y" }}</td>
-
-
-                        <!-- Time In -->
-                        <td>{{ visitor.time_in|date:"h:i A" }}</td>
+                        <!-- Time In: Philippine time -->
+                        <td>
+                            {{ visitor.time_in|timezone:"Asia/Manila"|date:"h:i A" }}
+                        </td>
 
                     </tr>
 
@@ -340,3 +326,4 @@
 
 </body>
 </html>
+```
